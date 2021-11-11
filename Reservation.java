@@ -57,9 +57,9 @@ public class Reservation {
         try {
 			while((line = br.readLine()) != null) {
 			   parts = line.split(", ");
-			   String roomType2 = parts[2];
-			   LocalDate checkIn2 = LocalDate.parse(parts[3], formatter);
-			   LocalDate checkOut2 = LocalDate.parse(parts[4], formatter);
+			   String roomType2 = parts[3];
+			   LocalDate checkIn2 = LocalDate.parse(parts[4], formatter);
+			   LocalDate checkOut2 = LocalDate.parse(parts[5], formatter);
 			   
 			   if(roomType2 == roomType && (checkIn1.isBefore(checkIn2) && checkOut1.isBefore(checkIn2)) ||
 					   						(checkIn1.isBefore(checkIn2) && checkOut1.isEqual(checkIn2)) ||
