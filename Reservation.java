@@ -1,4 +1,6 @@
 import java.io.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /*A Reservation Object*/
@@ -10,7 +12,7 @@ public class Reservation {
 	private int refNo;
 	
 	/*Reservation Constructor*/
-	public Reservation(String name, String type, String roomType, String checkIn, String checkOut) {
+	public Reservation(String name, String type, String roomType, String checkIn, String checkOut) throws Exception{
 		if(available(roomType, checkIn, checkOut)) {
 			this.name = name;
 			this.resType = type;
@@ -20,10 +22,10 @@ public class Reservation {
 			bookings++;
 			refNo = bookings;
 			addRes();
+		}else {
 		}
 	}
 	
-	/*Adds reservation to csv file*/
 	public void addRes() {
 		try(FileWriter fw = new FileWriter("Desktop\reservations.csv", true);
 			    BufferedWriter bw = new BufferedWriter(fw);
@@ -35,8 +37,46 @@ public class Reservation {
 			}
 	}
 	
-	/*Checks if room is available*/
 	public boolean available(String roomType, String checkIn, String checkOut) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+		LocalDate checkIn1 = LocalDate.parse(checkIn, formatter);
+		LocalDate checkOut1 = LocalDate.parse(checkOut, formatter);
+		File file = new File("Desktop\reservations.csv");
+        FileReader fr = null;
+        
+		try {
+			fr = new FileReader(file);
+		} catch (FileNotFoundException e) {
+		}
+		
+        BufferedReader br = new BufferedReader(fr);
+        String line;
+        String[] parts;
+        int taken = 0;
+        
+        try {
+			while((line = br.readLine()) != null) {
+			   parts = line.split(", ");
+			   String roomType2 = parts[2];
+			   LocalDate checkIn2 = LocalDate.parse(parts[3], formatter);
+			   LocalDate checkOut2 = LocalDate.parse(parts[4], formatter);
+			   
+			   if(roomType2 == roomType && (checkIn1.isBefore(checkIn2) && checkOut1.isBefore(checkIn2)) ||
+					   						(checkIn1.isBefore(checkIn2) && checkOut1.isEqual(checkIn2)) ||
+					   					 	(checkIn1.isAfter(checkOut2) && checkOut1.isAfter(checkOut2)) ||
+					   					 	(checkIn1.isEqual(checkOut2) && checkOut1.isAfter(checkOut2))) {
+				   
+			   }else {
+				   taken++;
+			   }
+			}
+		} catch (IOException e) {
+		}
+        
+        if(taken<RoomList.getRooms(roomType)) {
+        	return true;
+        }
+        
 		return false;
 	}
 }
