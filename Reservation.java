@@ -19,10 +19,12 @@ public class Reservation {
 			this.checkOut = checkOut;
 			bookings++;
 			refNo = bookings;
+			addRes();
 		}
 	}
 	
-	public void addRes(Reservation a) {
+	/*Adds reservation to csv file*/
+	public void addRes() {
 		try(FileWriter fw = new FileWriter("Desktop\reservations.csv", true);
 			    BufferedWriter bw = new BufferedWriter(fw);
 			    PrintWriter out = new PrintWriter(bw))
@@ -33,6 +35,7 @@ public class Reservation {
 			}
 	}
 	
+	/*Checks if room is available*/
 	public boolean available(String roomType, String checkIn, String checkOut) {
 		return false;
 	}
