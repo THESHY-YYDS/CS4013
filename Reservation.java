@@ -10,6 +10,7 @@ public class Reservation {
 	public String checkIn, checkOut;
 	private static int bookings = 0;
 	private int refNo;
+	String filePath = "";
 	
 	/*Reservation Constructor*/
 	public Reservation(String name, String type, String roomType, String checkIn, String checkOut) throws Exception{
@@ -22,12 +23,13 @@ public class Reservation {
 			bookings++;
 			refNo = bookings;
 			addRes();
-		}else {
+		}else{
 		}
 	}
 	
+	/*Adds reseration to reservation.csv file*/
 	public void addRes() {
-		try(FileWriter fw = new FileWriter("Desktop\reservations.csv", true);
+		try(FileWriter fw = new FileWriter(filePath, true);
 			    BufferedWriter bw = new BufferedWriter(fw);
 			    PrintWriter out = new PrintWriter(bw))
 			{
@@ -37,11 +39,12 @@ public class Reservation {
 			}
 	}
 	
+	/*Checks if selected room is available for those dates by checking the amount not available in reservation list*/
 	public boolean available(String roomType, String checkIn, String checkOut) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
 		LocalDate checkIn1 = LocalDate.parse(checkIn, formatter);
 		LocalDate checkOut1 = LocalDate.parse(checkOut, formatter);
-		File file = new File("Desktop\reservations.csv");
+		File file = new File(filePath);
         FileReader fr = null;
         
 		try {
@@ -66,7 +69,7 @@ public class Reservation {
 					   					 	(checkIn1.isAfter(checkOut2) && checkOut1.isAfter(checkOut2)) ||
 					   					 	(checkIn1.isEqual(checkOut2) && checkOut1.isAfter(checkOut2))) {
 				   
-			   }else {
+			   }else{
 				   taken++;
 			   }
 			}
