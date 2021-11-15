@@ -13,7 +13,7 @@ public class Reservation {
 	String filePath = "";
 	
 	/*Reservation Constructor*/
-	public Reservation(String name, String type, String roomType, String checkIn, String checkOut) throws Exception{
+	public Reservation(String name, String type, String roomType, String checkIn, String checkOut, String filePath) throws Exception{
 		if(available(roomType, checkIn, checkOut)) {
 			this.name = name;
 			this.resType = type;
@@ -23,17 +23,17 @@ public class Reservation {
 			bookings++;
 			refNo = bookings;
 			addRes();
-		}else{
+			this.filePath = filePath;
 		}
 	}
 	
-	/*Adds reseration to reservation.csv file*/
+	/*Adds reservation to reservation.csv file*/
 	public void addRes() {
 		try(FileWriter fw = new FileWriter(filePath, true);
 			    BufferedWriter bw = new BufferedWriter(fw);
 			    PrintWriter out = new PrintWriter(bw))
 			{
-			    out.println(name+", "+refNo+", "+resType+", "+roomType+", "+checkIn+", "+checkOut);
+			    out.println(name+", "+refNo+", "+resType+", "+roomType+", "+checkIn+", "+checkOut+", "+getTotal());
 			    		} catch (IOException e) {
 			    
 			}
@@ -81,5 +81,25 @@ public class Reservation {
         }
         
 		return false;
+	}
+	
+	/*Calculates the total cost of the booking
+	  @return double*/
+	public double getTotal() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+		LocalDate checkIn1 = LocalDate.parse(checkIn, formatter);
+		LocalDate dateCopy = LocalDate.parse(checkIn, formatter);
+		LocalDate checkOut1 = LocalDate.parse(checkOut, formatter);
+		Double[] rates = getRates(roomType);
+		double total;
+		while(dateCopy!=checkOut1) {
+			int index = dateCopy.getDayOfWeek().getValue()-1;
+			total = total + rates[index];
+			dateCopy = dateCopy.plusDays(1);
+		}
+		if(resType=="AP") {
+			total = total*0.95;
+		}
+		return 0;
 	}
 }
