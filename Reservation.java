@@ -90,7 +90,7 @@ public class Reservation {
 		LocalDate checkIn1 = LocalDate.parse(checkIn, formatter);
 		LocalDate dateCopy = LocalDate.parse(checkIn, formatter);
 		LocalDate checkOut1 = LocalDate.parse(checkOut, formatter);
-		Double[] rates = getRates(roomType);
+		Double[] rates = RoomList.getRates(roomType);
 		double total;
 		while(dateCopy!=checkOut1) {
 			int index = dateCopy.getDayOfWeek().getValue()-1;
@@ -100,6 +100,18 @@ public class Reservation {
 		if(resType=="AP") {
 			total = total*0.95;
 		}
-		return 0;
+		return total;
+	}
+	
+	@Override
+	public boolean equals(Object res2) {
+		if(res2 instanceof Reservation) {
+		if(this.refNo==((Reservation)(res2)).refNo) {
+			return true;
+		}else {
+			return false;
+		}}else {
+			return false;
+		}
 	}
 }
