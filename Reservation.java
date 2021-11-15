@@ -10,16 +10,18 @@ public class Reservation {
 	public String checkIn, checkOut;
 	private static int bookings = 0;
 	private int refNo;
+	private int occupancy;
 	String filePath = "";
 	
 	/*Reservation Constructor*/
-	public Reservation(String name, String type, String roomType, String checkIn, String checkOut, String filePath) throws Exception{
-		if(available(roomType, checkIn, checkOut)) {
+	public Reservation(String name, String type, String roomType, String checkIn, String checkOut, int occupancy, String filePath) throws Exception{
+		if(available(roomType, checkIn, checkOut, occupancy)) {
 			this.name = name;
 			this.resType = type;
 			this.roomType = roomType;
 			this.checkIn = checkIn;
 			this.checkOut = checkOut;
+			this.occupancy = occupancy;
 			bookings++;
 			refNo = bookings;
 			addRes();
@@ -40,7 +42,7 @@ public class Reservation {
 	}
 	
 	/*Checks if selected room is available for those dates by checking the amount not available in reservation list*/
-	public boolean available(String roomType, String checkIn, String checkOut) {
+	public boolean available(String roomType, String checkIn, String checkOut, int occupancy) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
 		LocalDate checkIn1 = LocalDate.parse(checkIn, formatter);
 		LocalDate checkOut1 = LocalDate.parse(checkOut, formatter);
@@ -76,7 +78,7 @@ public class Reservation {
 		} catch (IOException e) {
 		}
         
-        if(taken<RoomList.getRooms(roomType)) {
+        if(taken<RoomList.getRooms(roomType)&&occupancy<=roomList.getOccupancy(roomType)) {
         	return true;
         }
         
